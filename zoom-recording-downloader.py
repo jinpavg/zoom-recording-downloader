@@ -27,6 +27,7 @@ import requests
 import time
 import sys
 import os
+import re
 APP_VERSION = "2.1"
 
 # JWT_TOKEN now lives in appenv.py
@@ -36,11 +37,11 @@ AUTHORIZATION_HEADER = {'Authorization': ACCESS_TOKEN}
 API_ENDPOINT_USER_LIST = 'https://api.zoom.us/v2/users'
 
 # Start date now split into YEAR, MONTH, and DAY variables (Within 6 month range)
-RECORDING_START_YEAR = 2022
-RECORDING_START_MONTH = 1
+RECORDING_START_YEAR = 2020
+RECORDING_START_MONTH = 3
 RECORDING_START_DAY = 1
-RECORDING_END_DATE = date.today()
-# RECORDING_END_DATE = date(2021, 8, 1)
+# RECORDING_END_DATE = date.today()
+RECORDING_END_DATE = date(2020, 4, 29)
 DOWNLOAD_DIRECTORY = 'downloads'
 COMPLETED_MEETING_IDS_LOG = 'completed-downloads.log'
 COMPLETED_MEETING_IDS = set()
@@ -102,6 +103,7 @@ def get_user_ids():
 def format_filename(recording, file_type, file_extension, recording_type, recording_id):
     uuid = recording['uuid']
     topic = recording['topic'].replace('/', '&')
+    topic = re.sub('é', 'e', topic) # attempting to replace offending chars
     rec_type = recording_type.replace("_", " ").title()
     meeting_time = parse(recording['start_time']).strftime('%Y.%m.%d - %I.%M %p UTC')
     return '{} - {} - {}.{}'.format(
